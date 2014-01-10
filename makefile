@@ -91,10 +91,8 @@ function body()
 
 i=0;
 av=("$@");
-echo ${#av[@]}
 while [ $i -lt $# ]
 do
-    echo ${av[$i]}
     if [ "${av[$i]}" == "--compiler" ] || [ "${av[$i]}" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
