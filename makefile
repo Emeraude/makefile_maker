@@ -6,6 +6,7 @@ red='echo -en \033[31m';
 yellow='echo -en \033[33m';
 
 _header=1;
+verbose=0;
 include=".";
 login=$USER
 project="";
@@ -106,10 +107,10 @@ do
     elif [ "$param" == "--name" ] || [ "$param" == "-n" ]
     then
 	name=${av[`expr $i + 1`]};
-    elif [ "$param" == "--project" ] || [ "$param" == "p" ]
+    elif [ "$param" == "--project" ] || [ "$param" == "-p" ]
     then
 	project=${av[`expr $i + 1`]};
-    elif [ "$param" == "--include" ] || [ "$param" == "i" ]
+    elif [ "$param" == "--include" ] || [ "$param" == "-i" ]
     then
 	include=${av[`expr $i + 1`]};
     elif [ `echo $param | cut -d '=' -f1` == "--header" ]
