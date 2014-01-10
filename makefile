@@ -119,7 +119,7 @@ do
 	else
 	    _header=1;
 	fi
-    elif [ "${av[$i]}" == "--help" ] || [ "${av[$i]}" == "h" ]
+    elif [ "${av[$i]}" == "--help" ]
     then
 	echo "Usage: makefile [options]..."
 	echo "Create a makefile"
