@@ -93,27 +93,29 @@ i=0;
 av=("$@");
 while [ $i -lt $# ]
 do
-    if [ "${av[$i]}" == "--compiler" ] || [ "${av[$i]}" == "-c" ]
+    param=${av[$i]}
+    if [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
-    elif [ "${av[$i]}" == "--flag" ] || [ "${av[$i]}" == "-f" ]
+    elif [ "$param" == "--flag" ] || [ "$param" == "-f" ]
     then
 	cflag[${#cflag[@]}]=${av[`expr $i + 1`]};
-    elif [ "${av[$i]}" == "--login" ] || [ "${av[$i]}" == "-l" ]
+    elif [ "$param" == "--login" ] || [ "$param" == "-l" ]
     then
 	login=${av[`expr $i + 1`]};
-    elif [ "${av[$i]}" == "--name" ] || [ "${av[$i]}" == "-n" ]
+    elif [ "$param" == "--name" ] || [ "$param" == "-n" ]
     then
 	name=${av[`expr $i + 1`]};
-    elif [ "${av[$i]}" == "--project" ] || [ "${av[$i]}" == "p" ]
+    elif [ "$param" == "--project" ] || [ "$param" == "p" ]
     then
 	project=${av[`expr $i + 1`]};
-    elif [ "${av[$i]}" == "--include" ] || [ "${av[$i]}" == "i" ]
+    elif [ "$param" == "--include" ] || [ "$param" == "i" ]
     then
 	include=${av[`expr $i + 1`]};
-    elif [ "${av[$i]}" == "--header" ]
+    elif [ `echo $param | cut -d '=' -f1` == "--header" ]
     then
-	if [ "${av[`expr $i + 1`]}" == "no" ] || [ "${av[`expr $i + 1`]}" == "n" ]
+	choice=`echo $param | cut -d '=' -f2`
+	if [ $choice == "no" ] || [ $choice == "n" ]
 	then
 	    _header=0;
 	else
@@ -125,7 +127,7 @@ do
 	echo "Create a makefile"
 	echo "  -c, --compiler	Change the compiler. Default is cc"
 	echo "  -f, --flag		Add a compilation flag"
-	echo "  --header yes/no	Print or not the epitech header. Default is yes"
+	echo "  --header=yes/no	Print or not the epitech header. Default is yes"
 	echo "  --help		Display this help"
 	echo "  -i, --include		Change the includes directory"
 	echo "  -l, --login		Change the login. Default is $USER"

@@ -11,8 +11,8 @@ then
     chmod 755 battery;
     echo "Moving script in /usr/bin";
     mv -i makefile /usr/bin;
-#    echo "Putting manpage in /usr/share/man/man1";
-#    mv -i makefile.1.gz /usr/share/man/man1;
+    echo "Putting manpage in /usr/share/man/man1";
+    mv -i makefile.1.gz /usr/share/man/man1;
     echo "Removing installer.sh";
     rm -f installer.sh;
 else
