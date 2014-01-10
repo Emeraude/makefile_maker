@@ -1,7 +1,7 @@
 Makefile_maker
 ==============
 
-A script that make a makefile, with the epitech header.
+A script that create a makefile, with the epitech header.
 
 To install it, you have to run the following command :
 
