@@ -110,6 +110,9 @@ do
     elif [ "$param" == "--project" ] || [ "$param" == "-p" ]
     then
 	project=${av[`expr $i + 1`]};
+    elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
+    then
+	verbose=1;
     elif [ "$param" == "--include" ] || [ "$param" == "-i" ]
     then
 	include=${av[`expr $i + 1`]};
@@ -134,14 +137,42 @@ do
 	echo "  -l, --login		Change the login. Default is $USER"
 	echo "  -n, --name		Change the executable name. Default is a.out"
 	echo "  -p, --project		Change the project name"
+	echo "  -v, --verbose		Enable verbose mode"
     fi
     i=`expr $i + 1`;
 done
 
-rm -f Makefile;
+if [ -e Makefile ]
+then
+    if [ $verbose -eq 1 ]
+    then
+	echo "Removing old Makefile..."
+	rm -f Makefile
+    fi
+fi
+if [ $verbose -eq 1 ]
+then
+    echo "Creating Makefile..."
+fi
+touch Makefile;
 if [ $_header -eq 1 ]
 then
+    if [ $verbose -eq 1 ]
+    then
+	echo "Adding epitech header : "
+	echo "  login : $login"
+	echo "  project name : $project"
+    fi
     header >> Makefile;
 fi
+if [ $verbose -eq 1 ]
+then
+    echo "Adding source files to Makefile..."
+fi
 sources >> Makefile;
+if [ $verbose -eq 1 ]
+then
+    echo "Executable name : $name"
+    echo "Adding rules to Makefile..."
+fi
 body >> Makefile;
