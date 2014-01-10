@@ -11,6 +11,7 @@ login=$USER
 project="";
 name="a.out";
 compiler="cc";
+cflag=();
 
 function header()
 {
@@ -47,12 +48,12 @@ function sources()
 	    echo " \\";
 	fi
     done
+    echo;
+    echo;
 }
 
 function body()
 {
-    echo;
-    echo;
     echo "OBJS	= \$(SRCS:.c=.o)";
     echo;
     echo "NAME	= $name";
@@ -64,6 +65,11 @@ function body()
     then
 	echo "CFLAGS	+= -I $include";
     fi
+    for i in "$cflag"
+    do
+	echo -n "CFLAGS	+= ";
+	echo $i;
+    done
     echo;
     echo "RM	= rm -f"
     echo;
@@ -84,37 +90,43 @@ function body()
 }
 
 i=0;
-av=($*);
+av=("$@");
+echo ${#av[@]}
 while [ $i -lt $# ]
 do
-    if [ ${av[$i]} == "--compiler " ] || [ ${av[$i]} == "-c" ]
+    echo ${av[$i]}
+    if [ "${av[$i]}" == "--compiler" ] || [ "${av[$i]}" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
-    elif [ ${av[$i]} == "--login" ] || [ ${av[$i]} == "-l" ]
+    elif [ "${av[$i]}" == "--flag" ] || [ "${av[$i]}" == "-f" ]
+    then
+	cflag[${#cflag[@]}]=${av[`expr $i + 1`]};
+    elif [ "${av[$i]}" == "--login" ] || [ "${av[$i]}" == "-l" ]
     then
 	login=${av[`expr $i + 1`]};
-    elif [ ${av[$i]} == "--name" ] || [ ${av[$i]} == "-n" ]
+    elif [ "${av[$i]}" == "--name" ] || [ "${av[$i]}" == "-n" ]
     then
 	name=${av[`expr $i + 1`]};
-    elif [ ${av[$i]} == "--project" ] || [ ${av[$i]} == "p" ]
+    elif [ "${av[$i]}" == "--project" ] || [ "${av[$i]}" == "p" ]
     then
 	project=${av[`expr $i + 1`]};
-    elif [ ${av[$i]} == "--include" ] || [ ${av[$i]} == "i" ]
+    elif [ "${av[$i]}" == "--include" ] || [ "${av[$i]}" == "i" ]
     then
 	include=${av[`expr $i + 1`]};
-    elif [ ${av[$i]} == "--header" ]
+    elif [ "${av[$i]}" == "--header" ]
     then
-	if [ ${av[`expr $i + 1`]} == "no" ] || [ ${av[`expr $i + 1`]} == "n" ]
+	if [ "${av[`expr $i + 1`]}" == "no" ] || [ "${av[`expr $i + 1`]}" == "n" ]
 	then
 	    _header=0;
 	else
 	    _header=1;
 	fi
-    elif [ ${av[$i]} == "--help" ] || [ ${av[$i]} == "h" ]
+    elif [ "${av[$i]}" == "--help" ] || [ "${av[$i]}" == "h" ]
     then
 	echo "Usage: makefile [options]..."
 	echo "Create a makefile"
 	echo "  -c, --compiler	Change the compiler. Default is cc"
+	echo "  -f, --flag		Add a compilation flag"
 	echo "  --header yes/no	Print or not the epitech header. Default is yes"
 	echo "  --help		Display this help"
 	echo "  -i, --include		Change the includes directory"
