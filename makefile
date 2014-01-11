@@ -10,6 +10,7 @@ verbose=0;
 include=".";
 login=$USER
 project="";
+files=".c"
 name="a.out";
 compiler="cc";
 cflag=();
@@ -31,7 +32,7 @@ function header()
 
 function sources()
 {
-    ls_c=(`ls *.c 2> /dev/null`);
+    ls_c=(`ls *$files 2> /dev/null`);
     size_c=${#ls_c[*]};
     echo -n "SRCS	= ";
     i=0;
@@ -98,6 +99,9 @@ do
     if [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
+    elif [ "$param" == "--files" ]
+    then
+	files=${av[`expr $i + 1`]};
     elif [ "$param" == "--flag" ] || [ "$param" == "-f" ]
     then
 	cflag[${#cflag[@]}]=${av[`expr $i + 1`]};
@@ -130,6 +134,7 @@ do
 	echo "Usage: makefile [options]...";
 	echo "Create a makefile";
 	echo "  -c, --compiler	Change the compiler. Default is cc";
+	echo "  --files		Change the extension of source files. Default is .c"
 	echo "  -f, --flag		Add a compilation flag";
 	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
 	echo "  --help		Display this help";
@@ -148,8 +153,8 @@ then
     if [ $verbose -eq 1 ]
     then
 	echo "Removing old Makefile...";
-	rm -f Makefile;
     fi
+    rm -f Makefile;
 fi
 if [ $verbose -eq 1 ]
 then
