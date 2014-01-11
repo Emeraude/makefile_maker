@@ -122,7 +122,7 @@ do
 	include=${av[`expr $i + 1`]};
     elif [ `echo $param | cut -d '=' -f1` == "--header" ]
     then
-	choice=`echo $param | cut -d '=' -f2`
+	choice=`echo $param | cut -d '=' -f2`;
 	if [ $choice == "no" ] || [ $choice == "n" ]
 	then
 	    _header=0;
@@ -134,7 +134,7 @@ do
 	echo "Usage: makefile [options]...";
 	echo "Create a makefile";
 	echo "  -c, --compiler	Change the compiler. Default is cc";
-	echo "  --files		Change the extension of source files. Default is .c"
+	echo "  --files		Change the extension of source files. Default is .c";
 	echo "  -f, --flag		Add a compilation flag";
 	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
 	echo "  --help		Display this help";
