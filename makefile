@@ -127,18 +127,18 @@ do
 	fi
     elif [ "${av[$i]}" == "--help" ]
     then
-	echo "Usage: makefile [options]..."
-	echo "Create a makefile"
-	echo "  -c, --compiler	Change the compiler. Default is cc"
-	echo "  -f, --flag		Add a compilation flag"
-	echo "  --header=yes/no	Print or not the epitech header. Default is yes"
-	echo "  --help		Display this help"
-	echo "  -i, --include		Change the includes directory"
-	echo "  -l, --login		Change the login. Default is $USER"
-	echo "  -n, --name		Change the executable name. Default is a.out"
-	echo "  -p, --project		Change the project name"
-	echo "  -v, --verbose		Enable verbose mode"
-	exit
+	echo "Usage: makefile [options]...";
+	echo "Create a makefile";
+	echo "  -c, --compiler	Change the compiler. Default is cc";
+	echo "  -f, --flag		Add a compilation flag";
+	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
+	echo "  --help		Display this help";
+	echo "  -i, --include		Change the includes directory";
+	echo "  -l, --login		Change the login. Default is $USER";
+	echo "  -n, --name		Change the executable name. Default is a.out";
+	echo "  -p, --project		Change the project name";
+	echo "  -v, --verbose		Enable verbose mode";
+	exit 0;
     fi
     i=`expr $i + 1`;
 done
@@ -147,33 +147,33 @@ if [ -e Makefile ]
 then
     if [ $verbose -eq 1 ]
     then
-	echo "Removing old Makefile..."
-	rm -f Makefile
+	echo "Removing old Makefile...";
+	rm -f Makefile;
     fi
 fi
 if [ $verbose -eq 1 ]
 then
-    echo "Creating Makefile..."
+    echo "Creating Makefile...";
 fi
 touch Makefile;
 if [ $_header -eq 1 ]
 then
     if [ $verbose -eq 1 ]
     then
-	echo "Adding epitech header : "
-	echo "  login : $login"
-	echo "  project name : $project"
+	echo "Adding epitech header : ";
+	echo "  login : $login";
+	echo "  project name : $project";
     fi
     header >> Makefile;
 fi
 if [ $verbose -eq 1 ]
 then
-    echo "Adding source files to Makefile..."
+    echo "Adding source files to Makefile...";
 fi
 sources >> Makefile;
 if [ $verbose -eq 1 ]
 then
-    echo "Executable name : $name"
-    echo "Adding rules to Makefile..."
+    echo "Executable name : $name";
+    echo "Adding rules to Makefile...";
 fi
 body >> Makefile;
