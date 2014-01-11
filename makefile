@@ -138,6 +138,7 @@ do
 	echo "  -n, --name		Change the executable name. Default is a.out"
 	echo "  -p, --project		Change the project name"
 	echo "  -v, --verbose		Enable verbose mode"
+	exit
     fi
     i=`expr $i + 1`;
 done
