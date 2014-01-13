@@ -1,12 +1,14 @@
 #!/bin/bash
-v=11
+v=12
 
-td='echo -en \033[0m';
+std='echo -en \033[0m';
 style='echo -en \033[0;37m';
 red='echo -en \033[31m';
+green='echo -en \033[32m';
 yellow='echo -en \033[33m';
 
 _header=1;
+_update=1;
 verbose=0;
 include=".";
 login=$USER
@@ -19,14 +21,20 @@ warning="-W -Wall -Wextra -pedantic -ansi";
 cflag=();
 dir=`pwd`;
 
-function check_maj()
+function check_update()
 {
-    wget -q -b -T 1 -O check https://raw.github.com/Emeraude/makefile_maker/master/makefile > /dev/null
-    version=`head check -n 2 | tail -n 1 | cut -d "=" -f2`
-    if [ "$version" != "$v" ]
+    wget -q -T 1 -O check https://raw.github.com/Emeraude/makefile_maker/master/makefile > /dev/null;
+    version=`head check -n 2 | tail -n 1 | cut -d "=" -f2`;
+    if [ $v -lt $version ]
     then
-	echo "A new version of Makefile_maker is available !"
+	$green;
+	echo "A new version of Makefile_maker is available !";
+	$style;
+    elif [ $verbose -eq 1 ]
+    then
+	echo "No new version available.";
     fi
+    rm -f check;
 }
 
 function header()
@@ -145,6 +153,15 @@ do
     elif [ "$param" == "--src" ] || [ "$param" == "-s" ]
     then
 	src=${av[`expr $i + 1`]};
+    elif [ "`echo $param | cut -d '=' -f1`" == "-u" ] || [ "`echo $param | cut -d '=' -f1`" == "--update" ]
+    then
+	choice=`echo $param | cut -d '=' -f2`;
+	if [ $choice == "no" ] || [ $choice == "n" ]
+	then
+	    _update=0;
+	else
+	    _update=1;
+	fi
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
 	verbose=1;
@@ -178,6 +195,7 @@ do
 	echo "  -n, --name		Change the executable name. Default is a.out";
 	echo "  -p, --project		Change project name in the epitech header";
 	echo "  -s, --src		Change the sources directory. Default is .";
+	echo "  -u, --update=yes/no	Enable/disable the online check of new version. Default is yes"
 	echo "  -v, --verbose		Enable verbose mode";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	exit 0;
@@ -185,7 +203,14 @@ do
     i=`expr $i + 1`;
 done
 
-check_maj;
+if [ $_update -eq 1 ]
+then
+    if [ $verbose -eq 1 ]
+    then
+	echo "Checking for a new version...";
+    fi
+    check_update;
+fi
 
 if [ -e Makefile ]
 then
