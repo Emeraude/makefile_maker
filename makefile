@@ -157,7 +157,7 @@ do
 	echo "Usage: makefile [options]...";
 	echo "Create a makefile";
 	echo "  -c, --compiler	Change the compiler. Default is cc";
-	echo "  -d, --directory Change directory in the epitech header. Default is ."
+	echo "  -d, --directory	Change directory in the epitech header. Default is ."
 	echo "  --files		Change the extension of source files. Default is .c";
 	echo "  -f, --flag		Add a compilation flag";
 	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
