@@ -10,7 +10,8 @@ verbose=0;
 include=".";
 login=$USER
 project="";
-files=".c"
+src=".";
+files=".c";
 name="a.out";
 compiler="cc";
 cflag=();
@@ -32,7 +33,17 @@ function header()
 
 function sources()
 {
-    ls_c=(`ls *$files 2> /dev/null`);
+    if [ $src != "." ]
+    then
+	if [ "${src: -1}" == "/" ]
+	then
+	    ls_c=(`ls $src*$files 2> /dev/null`);
+	else
+	    ls_c=(`ls $src/*$files 2> /dev/null`);
+	fi
+    else
+	ls_c=(`ls *$files 2> /dev/null`);
+    fi
     size_c=${#ls_c[*]};
     echo -n "SRCS	= ";
     i=0;
@@ -115,6 +126,9 @@ do
     elif [ "$param" == "--project" ] || [ "$param" == "-p" ]
     then
 	project=${av[`expr $i + 1`]};
+    elif [ "$param" == "--src" ] || [ "$param" == "-s" ]
+    then
+	src=${av[`expr $i + 1`]};
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
 	verbose=1;
@@ -143,6 +157,7 @@ do
 	echo "  -l, --login		Change the login. Default is $USER";
 	echo "  -n, --name		Change the executable name. Default is a.out";
 	echo "  -p, --project		Change the project name";
+	echo "  -s, --src		Change the sources directory";
 	echo "  -v, --verbose		Enable verbose mode";
 	exit 0;
     fi
