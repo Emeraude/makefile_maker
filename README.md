@@ -5,7 +5,7 @@ A script that create a makefile, with the epitech header.
 
 To install it, you have to run the following command :
 
-   	   root ./installer.sh
+   	   sudo ./installer.sh
 
 The makefile command will be put in /usr/bin.  
 Some options have been implemented :  
