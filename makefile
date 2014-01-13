@@ -14,7 +14,7 @@ src=".";
 files=".c";
 name="a.out";
 compiler="cc";
-warning="-W -Wall -Wextra -pedantic -ansi"
+warning="-W -Wall -Wextra -pedantic -ansi";
 cflag=();
 
 function header()
@@ -163,7 +163,7 @@ do
 	echo "  -p, --project		Change the project name";
 	echo "  -s, --src		Change the sources directory";
 	echo "  -v, --verbose		Enable verbose mode";
-	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi"
+	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	exit 0;
     fi
     i=`expr $i + 1`;
