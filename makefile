@@ -14,6 +14,7 @@ src=".";
 files=".c";
 name="a.out";
 compiler="cc";
+warning="-W -Wall -Wextra -pedantic -ansi"
 cflag=();
 
 function header()
@@ -73,7 +74,7 @@ function body()
     echo;
     echo "CC	= $compiler";
     echo;
-    echo "CFLAGS	+= -W -Wall -Wextra -pedantic -ansi";
+    echo "CFLAGS	+= $warning";
     if [ $include != "." ]
     then
 	echo "CFLAGS	+= -I $include";
@@ -132,6 +133,9 @@ do
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
 	verbose=1;
+    elif [ "$param" == "--warning" ] || [ "$param" == "-w" ]
+    then
+	warning=${av[`expr $i + 1`]};
     elif [ "$param" == "--include" ] || [ "$param" == "-i" ]
     then
 	include=${av[`expr $i + 1`]};
@@ -159,6 +163,7 @@ do
 	echo "  -p, --project		Change the project name";
 	echo "  -s, --src		Change the sources directory";
 	echo "  -v, --verbose		Enable verbose mode";
+	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi"
 	exit 0;
     fi
     i=`expr $i + 1`;
