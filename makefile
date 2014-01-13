@@ -16,11 +16,12 @@ name="a.out";
 compiler="cc";
 warning="-W -Wall -Wextra -pedantic -ansi";
 cflag=();
+dir=`pwd`;
 
 function header()
 {
     echo "##";
-    echo "## Makefile for $project in `pwd`";
+    echo "## Makefile for $project in $dir";
     echo "##";
     echo "## Made by $login";
     echo "## Login   <$login@epitech.eu>";
@@ -112,6 +113,9 @@ do
     if [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
+    elif [ "$param" == "--directory" ] || [ "$param" == "-d" ]
+    then
+	dir=${av[`expr $i + 1`]};
     elif [ "$param" == "--files" ]
     then
 	files=${av[`expr $i + 1`]};
@@ -153,6 +157,7 @@ do
 	echo "Usage: makefile [options]...";
 	echo "Create a makefile";
 	echo "  -c, --compiler	Change the compiler. Default is cc";
+	echo "  -d, --directory Change directory in the epitech header. Default is ."
 	echo "  --files		Change the extension of source files. Default is .c";
 	echo "  -f, --flag		Add a compilation flag";
 	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
@@ -160,8 +165,8 @@ do
 	echo "  -i, --include		Change the includes directory";
 	echo "  -l, --login		Change the login. Default is $USER";
 	echo "  -n, --name		Change the executable name. Default is a.out";
-	echo "  -p, --project		Change the project name";
-	echo "  -s, --src		Change the sources directory";
+	echo "  -p, --project		Change project name in the epitech header";
+	echo "  -s, --src		Change the sources directory. Default is .";
 	echo "  -v, --verbose		Enable verbose mode";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	exit 0;
