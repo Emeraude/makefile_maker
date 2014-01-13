@@ -1,6 +1,7 @@
 #!/bin/bash
+v=11
 
-std='echo -en \033[0m';
+td='echo -en \033[0m';
 style='echo -en \033[0;37m';
 red='echo -en \033[31m';
 yellow='echo -en \033[33m';
@@ -17,6 +18,16 @@ compiler="cc";
 warning="-W -Wall -Wextra -pedantic -ansi";
 cflag=();
 dir=`pwd`;
+
+function check_maj()
+{
+    wget -q -b -T 1 -O check https://raw.github.com/Emeraude/makefile_maker/master/makefile > /dev/null
+    version=`head check -n 2 | tail -n 1 | cut -d "=" -f2`
+    if [ "$version" != "$v" ]
+    then
+	echo "A new version of Makefile_maker is available !"
+    fi
+}
 
 function header()
 {
@@ -173,6 +184,8 @@ do
     fi
     i=`expr $i + 1`;
 done
+
+check_maj;
 
 if [ -e Makefile ]
 then
