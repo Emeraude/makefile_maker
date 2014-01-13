@@ -67,13 +67,14 @@ function body()
     then
 	echo "CFLAGS	+= -I $include";
     fi
-    for i in "$cflag"
+    i=0;
+    while [ $i -lt ${#cflag[@]} ]
     do
-	echo -n "CFLAGS	+= ";
-	echo $i;
+	echo "CFLAGS	+= ${cflag[$i]}";
+	i=`expr $i + 1`;
     done
     echo;
-    echo "RM	= rm -f"
+    echo "RM	= rm -f";
     echo;
     echo "all:	\$(NAME)";
     echo;
@@ -120,7 +121,7 @@ do
     elif [ "$param" == "--include" ] || [ "$param" == "-i" ]
     then
 	include=${av[`expr $i + 1`]};
-    elif [ `echo $param | cut -d '=' -f1` == "--header" ]
+    elif [ "`echo $param | cut -d '=' -f1`" == "--header" ]
     then
 	choice=`echo $param | cut -d '=' -f2`;
 	if [ $choice == "no" ] || [ $choice == "n" ]
