@@ -9,7 +9,7 @@ then
     $style;
     echo "Putting the rights to execute the script...";
     chmod 755 makefile;
-    echo "Moving script in /usr/bin...";
+    echo "Putting script in /usr/bin...";
     if [ "$1" == "-m" ]
     then
 	mv -i makefile /usr/bin;
@@ -30,6 +30,6 @@ then
     fi
 else
     $red;
-    echo "You need to be root to install correctly the battery script.";
+    echo "You need to be root to install correctly the makefile_maker script.";
 fi
 $std;

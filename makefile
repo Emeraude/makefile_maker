@@ -1,5 +1,5 @@
 #!/bin/bash
-v=12
+v=13
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -23,18 +23,63 @@ dir=`pwd`;
 
 function check_update()
 {
-    wget -q -T 1 -O check https://raw.github.com/Emeraude/makefile_maker/master/makefile > /dev/null;
+    wget -q -t 1 -T 1 -O check https://raw.github.com/Emeraude/makefile_maker/master/makefile;
+    if [ $? -ne 0 ]
+    then
+	if [ $verbose -eq 1 ]
+	then
+	    echo "Unable to check for a new version. Please make sure you are connected to the internet.";
+	fi
+	rm -f check;
+	return 0;
+    fi
     version=`head check -n 2 | tail -n 1 | cut -d "=" -f2`;
     if [ $v -lt $version ]
     then
 	$green;
 	echo "A new version of Makefile_maker is available !";
 	$style;
+	rm -f check;
+	return 1;
     elif [ $verbose -eq 1 ]
     then
 	echo "No new version available.";
+	rm -f check;
+	return 0;
     fi
     rm -f check;
+}
+
+function upgrade()
+{
+    check_update;
+    if [ $? -eq 1 ]
+    then
+	if [ `whoami` == "root" ]
+	then
+	    echo "Downloading...";
+	    wget -q -t 1 -T 1 -O .exec_maj https://raw.github.com/Emeraude/makefile_maker/master/makefile;
+	    x=$?;
+	    wget -q -t 1 -T 1 -O .man_maj https://raw.github.com/Emeraude/makefile_maker/master/makefile;
+	    y=$?;
+	    if [ $x -eq 0 ] && [ $y -eq 0 ]
+	    then
+		echo "Putting script in /usr/bin...";
+		mv .exec_maj /usr/bin/makefile;
+		echo "Putting manpage in /usr/share/man/man1";
+		mv .man_maj /usr/share/man/man1;
+		echo "Done."
+	    else
+		$red;
+		echo "Unable to download the new files. Please make sure you are connected to the internet.";
+	    fi
+	else
+	    $red;
+	    echo "You need to be root to upgrade correctly the makefile_maker script.";
+	fi
+    fi
+    $std;
+    exit 0;
 }
 
 function header()
@@ -124,6 +169,7 @@ function body()
     echo ".PHONY:	all clean fclean re";
 }
 
+$style;
 i=0;
 av=("$@");
 while [ $i -lt $# ]
@@ -162,6 +208,9 @@ do
 	else
 	    _update=1;
 	fi
+    elif [ "$param" == "--upgrade" ]
+    then
+	upgrade;
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
 	verbose=1;
@@ -196,6 +245,7 @@ do
 	echo "  -p, --project		Change project name in the epitech header";
 	echo "  -s, --src		Change the sources directory. Default is .";
 	echo "  -u, --update=yes/no	Enable/disable the online check of new version. Default is yes"
+	echo "  --upgrade	Check if a new version is available, and install it if it is possible"
 	echo "  -v, --verbose		Enable verbose mode";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	exit 0;
