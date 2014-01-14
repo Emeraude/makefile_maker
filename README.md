@@ -18,5 +18,5 @@ The script check automatically if a new version is available. In that event, you
 
     	   sudo makefile --upgrade
 
-Makefile_maker v1.5  
+Makefile_maker v1.6  
 Developped by Emeraude.

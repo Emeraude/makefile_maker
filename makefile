@@ -1,5 +1,5 @@
 #!/bin/bash
-v=15
+v=16
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -191,7 +191,7 @@ function body()
     echo "\$(NAME)";
     echo;
     echo "\$(NAME):	\$(OBJS)";
-    echo "	\$(CC) -o \$(NAME) \$(OBJS) $compile_line";
+    echo "	\$(CC) -o \$(NAME) \$(OBJS)$compile_line";
     echo;
     i=0;
     while [ $i -lt ${#lib_name[@]} ]
@@ -235,7 +235,7 @@ do
     param=${av[$i]}
     if [ "$param" == "--compile-line" ] || [ "$param" == "-cl" ]
     then
-	compile_line=$compile_line${av[`expr $i + 1`]};
+	compile_line="$compile_line ${av[`expr $i + 1`]}";
     elif [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
