@@ -1,5 +1,5 @@
 #!/bin/bash
-v=13
+v=14
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -44,16 +44,16 @@ function check_update()
     elif [ $verbose -eq 1 ]
     then
 	echo "No new version available.";
-	rm -f check;
-	return 0;
     fi
     rm -f check;
+    return 2;
 }
 
 function upgrade()
 {
     check_update;
-    if [ $? -eq 1 ]
+    a=$?
+    if [ $a -eq 1 ]
     then
 	if [ `whoami` == "root" ]
 	then
@@ -64,6 +64,8 @@ function upgrade()
 	    y=$?;
 	    if [ $x -eq 0 ] && [ $y -eq 0 ]
 	    then
+		echo "Putting the rights to execute the script...";
+		chmod 755 .exec_maj;
 		echo "Putting script in /usr/bin...";
 		mv .exec_maj /usr/bin/makefile;
 		echo "Putting manpage in /usr/share/man/man1";
@@ -77,6 +79,12 @@ function upgrade()
 	    $red;
 	    echo "You need to be root to upgrade correctly the makefile_maker script.";
 	fi
+    elif [ $a -eq 2 ]
+    then
+	echo "No new version available.";
+    else
+	$red;
+	echo "Unable to check for a new version. Please make sure you are connected to the internet.";
     fi
     $std;
     exit 0;
