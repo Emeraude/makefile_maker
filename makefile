@@ -64,10 +64,10 @@ function upgrade()
 	    y=$?;
 	    if [ $x -eq 0 ] && [ $y -eq 0 ]
 	    then
-		echo "Putting the rights to execute the script...";
-		chmod 755 .exec_maj;
 		echo "Putting script in /usr/bin...";
 		mv .exec_maj /usr/bin/makefile;
+		echo "Putting the rights to execute the script...";
+		chmod 755 /usr/bin/makefile;
 		echo "Putting manpage in /usr/share/man/man1";
 		mv .man_maj /usr/share/man/man1;
 		echo "Done."

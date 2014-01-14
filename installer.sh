@@ -7,8 +7,6 @@ std='echo -en \033[0m';
 if [ `whoami` == "root" ]
 then
     $style;
-    echo "Putting the rights to execute the script...";
-    chmod 755 makefile;
     echo "Putting script in /usr/bin...";
     if [ "$1" == "-m" ]
     then
@@ -16,6 +14,8 @@ then
     else
 	cp -i makefile /usr/bin;
     fi
+    echo "Putting the rights to execute the script...";
+    chmod 755 /usr/bin/makefile;
     echo "Putting manpage in /usr/share/man/man1...";
     if [ "$1" == "-m" ]
     then
