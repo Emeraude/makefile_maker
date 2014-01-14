@@ -1,5 +1,5 @@
 #!/bin/bash
-v=14
+v=15
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -19,6 +19,10 @@ name="a.out";
 compiler="cc";
 warning="-W -Wall -Wextra -pedantic -ansi";
 cflag=();
+lib_src=();
+lib_name=();
+lib_name_src="";
+compile_line="";
 dir=`pwd`;
 
 function check_update()
@@ -119,7 +123,7 @@ function sources()
 	ls_c=(`ls *$files 2> /dev/null`);
     fi
     size_c=${#ls_c[*]};
-    echo -n "SRCS	= ";
+    echo -n "SRCS$lib_name_srcs	= ";
     i=0;
     while [ $i -lt $size_c ]
     do
@@ -141,9 +145,24 @@ function sources()
 
 function body()
 {
-    echo "OBJS	= \$(SRCS:.c=.o)";
+    echo "OBJS	= \$(SRCS:$files=.o)";
+    i=0;
+    while [ $i -lt ${#lib_name[@]} ]
+    do
+	lib_name_srcs=`echo ${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+	echo "OBJS_$lib_name_srcs	= \$(SRCS_$lib_name_srcs:$files=.o)";
+	i=`expr $i + 1`;
+    done
     echo;
     echo "NAME	= $name";
+    i=0;
+    while [ $i -lt ${#lib_name[@]} ]
+    do
+	lib_name_srcs=`echo ${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+	lib_name_ar=`echo lib${lib_name[$i]}.a`;
+	echo "NAME_$lib_name_srcs	= $lib_name_ar";
+	i=`expr $i + 1`;
+    done
     echo;
     echo "CC	= $compiler";
     echo;
@@ -161,16 +180,47 @@ function body()
     echo;
     echo "RM	= rm -f";
     echo;
-    echo "all:	\$(NAME)";
+    echo -n "all:	";
+    i=0;
+    while [ $i -lt ${#lib_name[@]} ]
+    do
+	lib_name_srcs=`echo ${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+	echo -n "\$(NAME_$lib_name_srcs) "
+	i=`expr $i + 1`;
+    done
+    echo "\$(NAME)";
     echo;
     echo "\$(NAME):	\$(OBJS)";
-    echo "	\$(CC) -o \$(NAME) \$(OBJS)";
+    echo "	\$(CC) -o \$(NAME) \$(OBJS) $compile_line";
     echo;
+    i=0;
+    while [ $i -lt ${#lib_name[@]} ]
+    do
+	lib_name_srcs=`echo ${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+	echo "\$(NAME_$lib_name_srcs):	\$(OBJS_$lib_name_srcs)";
+	echo "	ar r \$(NAME_$lib_name_srcs) \$(OBJS_$lib_name_srcs)";
+	i=`expr $i + 1`;
+	echo;
+    done
     echo "clean:";
     echo "	\$(RM) \$(OBJS)";
+    i=0;
+    while [ $i -lt ${#lib_name[@]} ]
+    do
+	lib_name_srcs=`echo ${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+	echo "	\$(RM) \$(OBJS_$lib_name_srcs)";
+	i=`expr $i + 1`;
+    done
     echo;
     echo "fclean:	clean";
     echo "	\$(RM) \$(NAME)";
+    i=0;
+    while [ $i -lt ${#lib_name[@]} ]
+    do
+	lib_name_srcs=`echo ${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+	echo "	\$(RM) \$(NAME_$lib_name_srcs)";
+	i=`expr $i + 1`;
+    done
     echo;
     echo "re:	fclean all";
     echo;
@@ -183,7 +233,10 @@ av=("$@");
 while [ $i -lt $# ]
 do
     param=${av[$i]}
-    if [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
+    if [ "$param" == "--compile-line" ] || [ "$param" == "-cl" ]
+    then
+	compile_line=$compile_line${av[`expr $i + 1`]};
+    elif [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
     elif [ "$param" == "--directory" ] || [ "$param" == "-d" ]
@@ -195,6 +248,11 @@ do
     elif [ "$param" == "--flag" ] || [ "$param" == "-f" ]
     then
 	cflag[${#cflag[@]}]=${av[`expr $i + 1`]};
+    elif [ "$param" == "--lib" ]
+    then
+	lib_src[${#lib_src[@]}]=${av[`expr $i + 1`]};
+	lib_name[${#lib_name[@]}]=${av[`expr $i + 2`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--login" ] || [ "$param" == "-l" ]
     then
 	login=${av[`expr $i + 1`]};
@@ -241,6 +299,7 @@ do
     then
 	echo "Usage: makefile [options]...";
 	echo "Create a makefile";
+	echo "  -cl, --compile-line	Add parameters in the compilation line"
 	echo "  -c, --compiler	Change the compiler. Default is cc";
 	echo "  -d, --directory	Change directory in the epitech header. Default is ."
 	echo "  --files		Change the extension of source files. Default is .c";
@@ -248,12 +307,13 @@ do
 	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
 	echo "  --help		Display this help";
 	echo "  -i, --include		Change the includes directory";
-	echo "  -l, --login		Change the login. Default is $USER";
+	echo "  --lib			Adding a librairy. The two following arguments are the directory where are the lib sources and the name of the lib";
+	echo "  --login		Change the login. Default is $USER";
 	echo "  -n, --name		Change the executable name. Default is a.out";
 	echo "  -p, --project		Change project name in the epitech header";
 	echo "  -s, --src		Change the sources directory. Default is .";
 	echo "  -u, --update=yes/no	Enable/disable the online check of new version. Default is yes"
-	echo "  --upgrade	Check if a new version is available, and install it if it is possible"
+	echo "  --upgrade		Check if a new version is available, and install it if it is possible"
 	echo "  -v, --verbose		Enable verbose mode";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	exit 0;
@@ -298,6 +358,14 @@ then
     echo "Adding source files to Makefile...";
 fi
 sources >> Makefile;
+i=0;
+while [ $i -lt ${#lib_name[@]} ]
+do
+    src=${lib_src[$i]};
+    lib_name_srcs=`echo _${lib_name[$i]} | tr "[:lower:]" "[:upper:]"`;
+    sources >> Makefile;
+    i=`expr $i + 1`;
+done
 if [ $verbose -eq 1 ]
 then
     echo "Executable name : $name";
