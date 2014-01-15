@@ -5,7 +5,7 @@ A script that create a makefile, with the epitech header.
 
 To install it, you have to run the following command :
 
-   	   sudo ./installer.sh
+   	sudo ./installer.sh
 
 The makefile command will be put in /usr/bin.  
 Some options have been implemented :  
@@ -16,7 +16,11 @@ You can change the compiler, display or not the header, change the login in the 
 You also can read the man. ;)  
 The script check automatically if a new version is available. In that event, you can upgrade the script by running the following command :
 
-    	   sudo makefile --upgrade
+    	sudo makefile --upgrade
 
-Makefile_maker v1.6  
+You can change the default values if you modify the following file :
+
+    	~/.makerc
+
+Makefile_maker v1.7  
 Developped by Emeraude.

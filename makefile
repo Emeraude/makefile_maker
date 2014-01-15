@@ -1,5 +1,5 @@
 #!/bin/bash
-v=16
+v=17
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -24,6 +24,10 @@ lib_name=();
 lib_name_src="";
 compile_line="";
 dir=`pwd`;
+
+touch ~/.makerc;
+chmod 755 ~/.makerc;
+source ~/.makerc 2> /dev/null;
 
 function check_update()
 {
@@ -316,6 +320,8 @@ do
 	echo "  --upgrade		Check if a new version is available, and install it if it is possible"
 	echo "  -v, --verbose		Enable verbose mode";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
+	echo;
+	echo "You can change the default values by modifying your ~/.makerc file"
 	exit 0;
     fi
     i=`expr $i + 1`;
