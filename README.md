@@ -22,5 +22,5 @@ You can change the default values if you modify the following file :
 
 	~/.makerc
 
-Makefile_maker v1.7  
+Makefile_maker v1.8  
 Developped by Emeraude.

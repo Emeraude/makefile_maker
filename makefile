@@ -1,5 +1,6 @@
 #!/bin/bash
-v=17
+v=18
+changelog="Adding --version and print informations about next updates where they are availables"
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -47,6 +48,8 @@ function check_update()
 	$green;
 	echo "A new version of Makefile_maker is available !";
 	$style;
+	infos=`head check -n 3 | tail -n 1 | cut -d "=" -f2`;
+	echo "  Informations : $infos";
 	rm -f check;
 	return 1;
     elif [ $verbose -eq 1 ]
@@ -284,6 +287,12 @@ do
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
 	verbose=1;
+    elif [ "$param" == "--version" ]
+    then
+	v=`echo $v | cut -d '=' -f2`;
+	w=${v: 1};
+	echo -e "Makefile_maker v$v\b.$w";
+	exit 0;
     elif [ "$param" == "--warning" ] || [ "$param" == "-w" ]
     then
 	warning=${av[`expr $i + 1`]};
@@ -319,9 +328,10 @@ do
 	echo "  -u, --update=yes/no	Enable/disable the online check of new version. Default is yes"
 	echo "  --upgrade		Check if a new version is available, and install it if it is possible"
 	echo "  -v, --verbose		Enable verbose mode";
+	echo "  --version		Display version informations and exit";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	echo;
-	echo "You can change the default values by modifying your ~/.makerc file"
+	echo "You can change the default values by modifying your ~/.makerc file";
 	exit 0;
     fi
     i=`expr $i + 1`;
