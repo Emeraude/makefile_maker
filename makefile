@@ -1,6 +1,6 @@
 #!/bin/bash
-v=18
-changelog="Adding --version and print informations about next updates where they are availables"
+v=19
+changelog="Adding informations about version in --version";
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -292,6 +292,7 @@ do
 	v=`echo $v | cut -d '=' -f2`;
 	w=${v: 1};
 	echo -e "Makefile_maker v$v\b.$w";
+	echo "  informations : $changelog";
 	exit 0;
     elif [ "$param" == "--warning" ] || [ "$param" == "-w" ]
     then
