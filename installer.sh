@@ -20,13 +20,10 @@ then
     if [ "$1" == "-m" ]
     then
 	mv -i makefile.1.gz /usr/share/man/man1;
+	echo "Removing installer.sh...";
+	rm -f installer.sh;
     else
 	cp -i makefile.1.gz /usr/share/man/man1;
-    fi
-    if [ "$1" == "-m" ]
-    then
-	echo "Removing installer.sh..."
-	rm -f installer.sh;
     fi
 else
     $red;
