@@ -333,7 +333,12 @@ do
 	i=`expr $i + 2`;
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
-	verbose=1;
+	if [ $verbose -eq 0 ]
+	then
+	    verbose=1;
+	else
+	    verbose=0;
+	fi
     elif [ "$param" == "--version" ]
     then
 	v=`echo $v | cut -d '=' -f2`;
