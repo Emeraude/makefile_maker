@@ -1,6 +1,6 @@
 #!/bin/bash
-v=19
-changelog="Adding informations about version in --version";
+v=20
+changelog="You can now using your own variables and rules, with --var and --rules options. Libraries are also available with -l flag. Bug fixes (parameters are not interpreted anymore)";
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -19,6 +19,10 @@ files=".c";
 name="a.out";
 compiler="cc";
 warning="-W -Wall -Wextra -pedantic -ansi";
+var=();
+var_content=();
+rule=();
+rule_content=();
 cflag=();
 lib_src=();
 lib_name=();
@@ -187,6 +191,14 @@ function body()
     echo;
     echo "RM	= rm -f";
     echo;
+    i=0;
+    while [ $i -lt ${#var[@]} ]
+    do
+	var_name=`echo ${var[$i]} | tr "[:lower:]" "[:upper:]"`;
+	echo "$var_name	= ${var_content[$i]}";
+	echo;
+	i=`expr $i + 1`
+    done
     echo -n "all:	";
     i=0;
     while [ $i -lt ${#lib_name[@]} ]
@@ -231,7 +243,23 @@ function body()
     echo;
     echo "re:	fclean all";
     echo;
-    echo ".PHONY:	all clean fclean re";
+    i=0;
+    while [ $i -lt ${#rule[@]} ]
+    do
+	rule_name=`echo ${rule[$i]} | tr "[:upper:]" "[:lower:]"`;
+	echo "$rule_name: ${rule_content[$i]}";
+	echo;
+	i=`expr $i + 1`;
+    done
+    echo -n ".PHONY:	all clean fclean re";
+    i=0;
+    while [ $i -lt ${#rule[@]} ]
+    do
+	rule_name=`echo ${rule[$i]} | tr "[:upper:]" "[:lower:]"`;
+	echo -n " $rule_name";
+	i=`expr $i + 1`;
+    done
+    echo;
 }
 
 $style;
@@ -243,35 +271,49 @@ do
     if [ "$param" == "--compile-line" ] || [ "$param" == "-cl" ]
     then
 	compile_line="$compile_line ${av[`expr $i + 1`]}";
+	i=`expr $i + 1`;
     elif [ "$param" == "--compiler" ] || [ "$param" == "-c" ]
     then
 	compiler=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--directory" ] || [ "$param" == "-d" ]
     then
 	dir=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--files" ]
     then
 	files=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--flag" ] || [ "$param" == "-f" ]
     then
 	cflag[${#cflag[@]}]=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--lib" ]
     then
 	lib_src[${#lib_src[@]}]=${av[`expr $i + 1`]};
 	lib_name[${#lib_name[@]}]=${av[`expr $i + 2`]};
-	i=`expr $i + 1`;
+	i=`expr $i + 2`;
     elif [ "$param" == "--login" ] || [ "$param" == "-l" ]
     then
 	login=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--name" ] || [ "$param" == "-n" ]
     then
 	name=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--project" ] || [ "$param" == "-p" ]
     then
 	project=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
+    elif [ "$param" == "--rule" ] || [ "$param" == "-r" ]
+    then
+	rule[${#rule[@]}]=${av[`expr $i + 1`]};
+	rule_content[${#rule_content[@]}]=${av[`expr $i + 2`]};
+	i=`expr $i + 2`;
     elif [ "$param" == "--src" ] || [ "$param" == "-s" ]
     then
 	src=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "`echo $param | cut -d '=' -f1`" == "-u" ] || [ "`echo $param | cut -d '=' -f1`" == "--update" ]
     then
 	choice=`echo $param | cut -d '=' -f2`;
@@ -284,6 +326,11 @@ do
     elif [ "$param" == "--upgrade" ]
     then
 	upgrade;
+    elif [ "$param" == "--var" ]
+    then
+	var[${#var[@]}]=${av[`expr $i + 1`]};
+	var_content[${#var_content[@]}]=${av[`expr $i + 2`]};
+	i=`expr $i + 2`;
     elif [ "$param" == "--verbose" ] || [ "$param" == "-v" ]
     then
 	verbose=1;
@@ -292,14 +339,16 @@ do
 	v=`echo $v | cut -d '=' -f2`;
 	w=${v: 1};
 	echo -e "Makefile_maker v$v\b.$w";
-	echo "  informations : $changelog";
+	echo "  Informations : $changelog";
 	exit 0;
     elif [ "$param" == "--warning" ] || [ "$param" == "-w" ]
     then
 	warning=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "$param" == "--include" ] || [ "$param" == "-i" ]
     then
 	include=${av[`expr $i + 1`]};
+	i=`expr $i + 1`;
     elif [ "`echo $param | cut -d '=' -f1`" == "--header" ]
     then
 	choice=`echo $param | cut -d '=' -f2`;
@@ -319,16 +368,18 @@ do
 	echo "  --files		Change the extension of source files. Default is .c";
 	echo "  -f, --flag		Add a compilation flag";
 	echo "  --header=yes/no	Print or not the epitech header. Default is yes";
-	echo "  --help		Display this help";
+	echo "  --help		Display this help and exit";
 	echo "  -i, --include		Change the includes directory";
-	echo "  --lib			Adding a librairy. The two following arguments are the directory where are the lib sources and the name of the lib";
+	echo "  -l, --lib		Adding a library. The two following arguments are the directory where are the lib sources and the name of the lib";
 	echo "  --login		Change the login. Default is $USER";
 	echo "  -n, --name		Change the executable name. Default is a.out";
 	echo "  -p, --project		Change project name in the epitech header";
+	echo "  -r, --rule		Add a rule in the Makefile. The two following arguments are the name of the rule, and his content. Rules are automatically added to .PHONY";
 	echo "  -s, --src		Change the sources directory. Default is .";
 	echo "  -u, --update=yes/no	Enable/disable the online check of new version. Default is yes"
 	echo "  --upgrade		Check if a new version is available, and install it if it is possible"
 	echo "  -v, --verbose		Enable verbose mode";
+	echo "  --var			Add a variable in the Makefile. The two following arguments are the name of the variable, and his content";
 	echo "  --version		Display version informations and exit";
 	echo "  -w, --warning		Change warnings flag. Default are -W -Wall -Wextra -pedantic -ansi";
 	echo;

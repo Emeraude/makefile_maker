@@ -9,7 +9,7 @@ To install it, you have to run the following command :
 
 The makefile command will be put in /usr/bin.  
 Some options have been implemented :  
-You can change the compiler, display or not the header, change the login in the header, the executable name, the project name, the source files, the include directory, the sources directory, modify the compilation line or add compilation flags. You also can compile your project with a library. More details with this command :
+You can change the compiler, display or not the header, change the login in the header, the executable name, the project name, the source files, the include directory, the sources directory, modify the compilation line or add compilation flags. You also can compile your project with a library and add your own variables and your own rules. More details with this command :
 
 	makefile --help
 
@@ -22,5 +22,5 @@ You can change the default values if you modify the following file :
 
 	~/.makerc
 
-Makefile_maker v1.9  
+Makefile_maker v2.0  
 Developped by Emeraude.
