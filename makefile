@@ -1,6 +1,6 @@
 #!/bin/bash
-v=20
-changelog="You can now using your own variables and rules, with --var and --rules options. Libraries are also available with -l flag. Bug fixes (parameters are not interpreted anymore)";
+v=21
+changelog="Fix a bug in date formatting in the epitech header";
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -113,9 +113,9 @@ function header()
     echo "## Made by $login";
     echo "## Login   <$login@epitech.eu>";
     echo "##";
-    echo "## Started on  `date +'%a %_d %b %H:%M:%S %Y'` $login";
+    echo "## Started on  `date +'%a %b %_d %H:%M:%S %Y'` $login";
     echo -n "## Last ";
-    echo "update `date +'%a %_d %b %H:%M:%S %Y'` $login";
+    echo "update `date +'%a %b %_d %H:%M:%S %Y'` $login";
     echo "##";
     echo;
 }
