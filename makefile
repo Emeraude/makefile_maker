@@ -1,6 +1,6 @@
 #!/bin/bash
-v=21
-changelog="Fix a bug in date formatting in the epitech header";
+v=22
+changelog="Improve update functions (fix man + fix permisions)";
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -29,6 +29,9 @@ lib_name=();
 lib_name_src="";
 compile_line="";
 dir=`pwd`;
+tmp_path="/tmp/makefile_maker_check_version?+$v";
+tmp_man="/tmp/makefile_maker_dl_man_version+$v";
+tmp_exec="/tmp/makefile_maker_dl_exec_version+$v";
 
 touch ~/.makerc;
 chmod 755 ~/.makerc;
@@ -36,14 +39,14 @@ source ~/.makerc 2> /dev/null;
 
 function check_update()
 {
-    wget -q -t 1 -T 1 -O check https://raw.github.com/Emeraude/makefile_maker/master/makefile;
+    wget -q -t 1 -T 1 -O $tmp_path https://raw.github.com/Emeraude/makefile_maker/master/makefile;
     if [ $? -ne 0 ]
     then
 	if [ $verbose -eq 1 ]
 	then
 	    echo "Unable to check for a new version. Please make sure you are connected to the internet.";
 	fi
-	rm -f check;
+	rm -f $tmp_path;
 	return 0;
     fi
     version=`head check -n 2 | tail -n 1 | cut -d "=" -f2`;
@@ -54,13 +57,13 @@ function check_update()
 	$style;
 	infos=`head check -n 3 | tail -n 1 | cut -d "=" -f2`;
 	echo "  Informations : $infos";
-	rm -f check;
+	rm -f $tmp_path;
 	return 1;
     elif [ $verbose -eq 1 ]
     then
 	echo "No new version available.";
     fi
-    rm -f check;
+    rm -f $tmp_path;
     return 2;
 }
 
@@ -73,18 +76,18 @@ function upgrade()
 	if [ `whoami` == "root" ]
 	then
 	    echo "Downloading...";
-	    wget -q -t 1 -T 1 -O .exec_maj https://raw.github.com/Emeraude/makefile_maker/master/makefile;
+	    wget -q -t 1 -T 1 -O $tmp_exec https://raw.github.com/Emeraude/makefile_maker/master/makefile;
 	    x=$?;
-	    wget -q -t 1 -T 1 -O .man_maj https://raw.github.com/Emeraude/makefile_maker/master/makefile;
+	    wget -q -t 1 -T 1 -O $tmp_man https://raw.github.com/Emeraude/makefile_maker/master/makefile.1.gz;
 	    y=$?;
 	    if [ $x -eq 0 ] && [ $y -eq 0 ]
 	    then
 		echo "Putting script in /usr/bin...";
-		mv .exec_maj /usr/bin/makefile;
+		mv $tmp_exec /usr/bin/makefile;
 		echo "Putting the rights to execute the script...";
 		chmod 755 /usr/bin/makefile;
 		echo "Putting manpage in /usr/share/man/man1";
-		mv .man_maj /usr/share/man/man1;
+		mv $tmp_man /usr/share/man/man1/makefile.1.gz;
 		echo "Done."
 	    else
 		$red;
