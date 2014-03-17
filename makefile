@@ -1,6 +1,6 @@
 #!/bin/bash
-v=22
-changelog="Improve update functions (fix man + fix permisions)";
+v=23
+changelog="Fix a little bug";
 
 std='echo -en \033[0m';
 style='echo -en \033[0;37m';
@@ -49,13 +49,13 @@ function check_update()
 	rm -f $tmp_path;
 	return 0;
     fi
-    version=`head check -n 2 | tail -n 1 | cut -d "=" -f2`;
+    version=`head $tmp_path -n 2 | tail -n 1 | cut -d "=" -f2`;
     if [ $v -lt $version ]
     then
 	$green;
 	echo "A new version of Makefile_maker is available !";
 	$style;
-	infos=`head check -n 3 | tail -n 1 | cut -d "=" -f2`;
+	infos=`head $tmp_path -n 3 | tail -n 1 | cut -d "=" -f2`;
 	echo "  Informations : $infos";
 	rm -f $tmp_path;
 	return 1;
